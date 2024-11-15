@@ -19,7 +19,7 @@ Esta es una versión inicial en constante mejora, por lo que es posible que encu
 
 ## 🚀 Acceso al proyecto
 
-Accede a esta web de práctica directamente desde el siguiente enlace: [Practice Tests](https://javilopercoder.repl.co).
+Accede a esta web de práctica directamente desde el siguiente enlace: [Practice Tests](https://test-j2zr.onrender.com).
 
 ---
 
