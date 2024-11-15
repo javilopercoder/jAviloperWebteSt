@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ test_name }} - Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 id="test-title">{{ test_name }}</h1>
+    </header>
+
+    <!-- Botón "Home" para volver a la página principal -->
+    <button id="back-home" type="button">Home</button>
+
+    <main>
+        <section class="test-questions">
+            <form id="test-form">
+                <!-- Las preguntas se cargarán aquí dinámicamente -->
+            </form>
+
+            <div id="result-container" style="display: none;"></div>
+
+            <button id="submit-test" type="button">Enviar</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024</p>
+    </footer>
+
+    <!-- Configuración de la navegación de regreso a Home -->
+    <script>
+        const homeUrl = "{{ url_for('index') }}";
+        document.getElementById("back-home").addEventListener("click", function() {
+            window.location.href = homeUrl;
+        });
+    </script>
+
+    <!-- Archivos JavaScript de la carpeta static/js -->
+    <script src="{{ url_for('static', filename='js/csvLoader.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/results.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Cargar las preguntas desde el backend -->
+    <script>
+        loadTestQuestions("{{ test_name }}");
+    </script>
+
+    <!-- JavaScript para actualizar el título del encabezado -->
+    <script>
+        // Formatear el nombre del test y actualizar el h1
+        const testTitle = document.getElementById("test-title");
+        testTitle.textContent = testTitle.textContent
+            .replace(/_/g, " ") // Reemplaza guiones bajos por espacios
+            .replace(/\b\w/g, char => char.toUpperCase()); // Capitaliza cada palabra
+    </script>
+
+    <!-- JavaScript adicional para detectar el desplazamiento de la página -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shrink');
+            } else {
+                header.classList.remove('shrink');
+            }
+        });
+    </script>
+</body>
+</html>

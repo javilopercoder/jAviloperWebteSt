@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Bienvenido al Test Online</h1>
+        <p>Seleccione el test que desea realizar:</p>
+    </header>
+
+    <main>
+        <section class="test-selection">
+            <ul>
+                <li><a href="{{ url_for('test', test_name='cloud_practitioner_C02') }}">Cloud Practitioner</a></li>
+                <li><a href="{{ url_for('test', test_name='solutions_architect_associate_C03') }}">Solutions Architect Associate</a></li>
+                <li><a href="{{ url_for('test', test_name='solutions_architect_professional_C02') }}">Solutions Architect Professional</a></li>
+                <li><a href="{{ url_for('test', test_name='developer_C02') }}">Developer</a></li>
+                <li><a href="{{ url_for('test', test_name='sysops_new') }}">SysOps</a></li>
+                <li><a href="{{ url_for('test', test_name='devops') }}">DevOps</a></li>
+                <li><a href="{{ url_for('test', test_name='data_engineer_C01') }}">Data Engineer</a></li>
+                <li><a href="{{ url_for('test', test_name='advanced_networking_C01') }}">Advanced Networking</a></li>
+                <li><a href="{{ url_for('test', test_name='security') }}">Security</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
