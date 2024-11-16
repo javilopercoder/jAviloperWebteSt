@@ -70,6 +70,28 @@ header.shrink {
 header h1 {
     font-size: 2em;
     margin-bottom: 0.5em;
+    word-break: break-word; /* Divide palabras largas para evitar desbordamientos */
+    text-align: center; /* Centra el texto */
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.4em; /* Reduce el tamaño del título en pantallas pequeñas */
+    }
+    
+    main {
+        margin-top: 0.95rem; /* Ajusta el margen para que no se tape el contenido */
+    }
+
+    .question {
+        padding: 10px;
+        font-size: 14px; /* Reduce ligeramente el tamaño del texto */
+    }
+
+    .question label {
+        font-size: 14px;
+        padding: 5px;
+    }
 }
 
 header p {
@@ -80,8 +102,8 @@ header p {
 /* Ajuste del contenido principal para compensar el encabezado fijo */
 main {
     margin-top: 80px; /* Ajusta este valor al alto del encabezado en su estado inicial */
-    width: 90%;
-    max-width: 800px;
+    width: 90%; /* Reduce un poco el ancho para pantallas más pequeñas */
+    max-width: 800px; /* Limita el ancho máximo */
     margin: 80px auto 20px; /* Ajusta el margen superior */
     padding: 20px;
     background-color: var(--main-background-color);
@@ -91,7 +113,9 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center; /* Asegura que el contenido esté centrado */
     transition: background-color 0.3s ease;
+    overflow-wrap: break-word; /* Ajusta palabras largas automáticamente */
 }
 
 /* Contenedor de preguntas */
@@ -102,6 +126,9 @@ main {
     border-radius: 5px;
     background-color: var(--question-background-color);
     color: var(--text-color);
+    overflow-wrap: break-word; /* Permite que las palabras largas se ajusten */
+    word-wrap: break-word; /* Compatibilidad con navegadores más antiguos */
+    word-break: break-word; /* Asegura el ajuste en todos los navegadores */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -109,6 +136,9 @@ main {
 .question p {
     margin-bottom: 10px;
     font-weight: bold;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 /* Opciones de respuesta */
@@ -121,16 +151,15 @@ main {
     background-color: var(--button-background-color);
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
-.question label:hover {
-    background-color: var(--button-hover-background-color);
-    color: var(--button-hover-text-color);
-}
-
-/* Espaciado entre el círculo de selección y el texto */
+/* Ajuste del input en las opciones */
 .question label input {
     margin-right: 10px;
+    flex-shrink: 0; /* Evita que el input se reduzca de tamaño */
 }
 
 /* Botones de navegación */
@@ -247,20 +276,29 @@ footer p {
     font-weight: bold;
 }
 
-/* Botón de cambio de modo */
+/* Botón general */
+button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px; /* Tamaño del texto o ícono */
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Botón de cambio de modo oscuro */
 #theme-toggle {
     position: fixed;
     top: 10px;
     right: 10px;
-    padding: 10px;
-    cursor: pointer;
     background-color: var(--button-background-color);
-    border: none;
     color: var(--text-color);
-    border-radius: 4px;
-    font-weight: bold;
-    z-index: 1001; /* Asegura que esté por encima del contenido */
-    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 50%; /* Forma redonda */
+    width: 40px;
+    height: 40px;
+    font-size: 18px; /* Tamaño del ícono */
 }
 
 #theme-toggle:hover {
@@ -273,16 +311,20 @@ footer p {
     position: fixed;
     top: 10px;
     left: 10px;
-    padding: 10px;
-    font-size: 16px;
+    padding: 5px;
+    font-size: 20px;
     background-color: var(--button-background-color);
-    color: var(--text-color);
     border: none;
-    border-radius: 5px;
+    color: var(--text-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    z-index: 1001; /* Asegura que esté encima de otros elementos */
+    z-index: 1001;
     transition: background-color 0.3s ease, color 0.3s ease;
-    font-weight: bold;
 }
 
 #back-home:hover {
@@ -290,8 +332,13 @@ footer p {
     color: var(--button-hover-text-color);
 }
 
-#back-home, #theme-toggle {
-    font-size: 14px; 
-    padding: 10px; /* Ajusta el padding si es necesario */
-    border-radius: 5px;
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    #theme-toggle,
+    #back-home {
+        width: 35px;
+        height: 35px;
+        font-size: 16px; /* Íconos ligeramente más pequeños */
+    }
 }
