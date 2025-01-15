@@ -19,7 +19,7 @@ Esta es una versión inicial en constante mejora, por lo que es posible que encu
 
 ## 🚀 Acceso al proyecto
 
-Accede a esta web de práctica directamente desde el siguiente enlace: [Practice Tests](https://test-j2zr.onrender.com).
+Accede a esta web de práctica directamente desde el siguiente enlace: [Practice Tests](https://javiloperwebtest.onrender.com).
 
 ---
 
@@ -27,6 +27,7 @@ Accede a esta web de práctica directamente desde el siguiente enlace: [Practice
 
 - Este proyecto **no está afiliado, respaldado ni autorizado por Amazon** ni ninguna otra marca.
 - **Las marcas comerciales, certificaciones y nombres de productos** son propiedad de Amazon y se utilizan únicamente como referencia.
+- Este contenido es estrictamente educativo y **no está destinado a sustituir** recursos oficiales.
 
 ---
 
@@ -34,6 +35,8 @@ Accede a esta web de práctica directamente desde el siguiente enlace: [Practice
 
 1. Este proyecto ha sido desarrollado como un recurso personal para fomentar el aprendizaje. Pueden existir errores en el contenido o en la funcionalidad; cualquier comentario será bien recibido para futuras mejoras. 🎉
 2. Aunque es una herramienta educativa útil, **no sustituye los recursos oficiales de AWS** ni garantiza la exactitud absoluta de las preguntas.
+
+**Nota adicional:** Algunas preguntas se inspiran en recursos disponibles públicamente en línea. Se recomienda complementar este recurso con los materiales oficiales de AWS para obtener una preparación completa.
 
 ---
 
