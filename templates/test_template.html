@@ -14,27 +14,47 @@
 
     <main>
         <section class="test-questions">
+            <section id="test-progress" class="test-progress" aria-label="Progreso del test">
+                <div class="progress-head">
+                    <p id="question-counter">Pregunta 1 de 65</p>
+                    <div class="progress-tools">
+                        <p id="answered-counter">Respondidas: 0</p>
+                        <button id="translate-es" type="button">Traducir al español</button>
+                    </div>
+                </div>
+                <div class="progress-track" aria-hidden="true">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div class="progress-legend" aria-hidden="true">
+                    <span><i class="dot current"></i>Actual</span>
+                    <span><i class="dot answered"></i>Respondida</span>
+                    <span><i class="dot marked"></i>Marcada</span>
+                </div>
+                <div id="question-grid" class="question-grid" aria-label="Navegacion por preguntas"></div>
+            </section>
+
             <form id="test-form">
-                <!-- Las preguntas se cargarán aquí dinámicamente -->
+                <!-- Se renderiza una pregunta por vez -->
             </form>
+
+            <div class="navigation-buttons" aria-label="Controles de navegacion">
+                <button id="prev-question" type="button">Anterior</button>
+                <button id="mark-question" type="button" aria-pressed="false">Marcar para revisar</button>
+                <button id="next-question" type="button">Siguiente</button>
+            </div>
 
             <div id="result-container" style="display: none;"></div>
 
-            <button id="submit-test" type="button">Enviar</button>
+            <div class="exam-action">
+                <button id="submit-test" type="button">Terminar examen</button>
+                <button id="copy-all-qa" type="button" style="display: none;">Copiar todas preguntas y respuestas</button>
+            </div>
         </section>
     </main>
 
     <footer>
         <p>&copy; javilopercoder 2024</p>
     </footer>
-
-    <!-- Configuración de la navegación de regreso a Home -->
-    <script>
-        const homeUrl = "{{ url_for('index') }}";
-        document.getElementById("back-home").addEventListener("click", function() {
-            window.location.href = homeUrl;
-        });
-    </script>
 
     <!-- Archivos JavaScript de la carpeta static/js -->
     <script src="{{ url_for('static', filename='js/csvLoader.js') }}"></script>

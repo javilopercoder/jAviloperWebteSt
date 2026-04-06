@@ -2,8 +2,61 @@ from flask import Flask, render_template, jsonify, request
 import pickle
 import os
 import pandas as pd
+from urllib.parse import quote
+from urllib.request import urlopen
+import json
 
 app = Flask(__name__)
+translation_cache = {}
+
+
+def translate_text_to_spanish(text):
+    if text is None:
+        return None
+
+    text = str(text).strip()
+    if text == "":
+        return ""
+
+    cache_key = f"es::{text}"
+    if cache_key in translation_cache:
+        return translation_cache[cache_key]
+
+    try:
+        encoded_text = quote(text)
+        url = (
+            "https://translate.googleapis.com/translate_a/single"
+            f"?client=gtx&sl=auto&tl=es&dt=t&q={encoded_text}"
+        )
+
+        with urlopen(url, timeout=8) as response:
+            payload = response.read().decode("utf-8")
+            parsed = json.loads(payload)
+            translated = "".join(part[0] for part in parsed[0] if part and part[0])
+
+        if not translated:
+            translated = text
+    except Exception:
+        translated = text
+
+    translation_cache[cache_key] = translated
+    return translated
+
+
+def sanitize_for_json(value):
+    if isinstance(value, dict):
+        return {k: sanitize_for_json(v) for k, v in value.items()}
+
+    if isinstance(value, list):
+        return [sanitize_for_json(item) for item in value]
+
+    try:
+        if pd.isna(value):
+            return None
+    except TypeError:
+        pass
+
+    return value
 
 
 # Ruta para la página principal
@@ -39,8 +92,8 @@ def get_data(test_name):
                 test_data_df = pickle.load(pkl_file)
 
                 # Reemplaza NaN con None para JSON válido
-                test_data_df = test_data_df.applymap(lambda x: None
-                                                     if pd.isna(x) else x)
+                test_data_df = test_data_df.astype(object).where(
+                    pd.notna(test_data_df), None)
 
                 # Selecciona aleatoriamente 65 preguntas sin repetición
                 if len(test_data_df) > 65:
@@ -51,8 +104,10 @@ def get_data(test_name):
                     )
 
                 # Convierte el DataFrame a un diccionario JSON serializable
-                test_data = test_data_df.to_dict(orient="records")
-                print(f"Datos JSON enviados para {test_name}: {test_data[:5]}"
+                test_data = sanitize_for_json(
+                    test_data_df.to_dict(orient="records"))
+                test_preview = test_data[:5] if isinstance(test_data, list) else []
+                print(f"Datos JSON enviados para {test_name}: {test_preview}"
                       )  # Muestra una muestra en consola
 
                 return jsonify(test_data)
@@ -81,8 +136,8 @@ def submit_test():
                 test_data_df = pickle.load(pkl_file)
 
                 # Reemplaza NaN con None para JSON válido
-                test_data_df = test_data_df.applymap(lambda x: None
-                                                     if pd.isna(x) else x)
+                test_data_df = test_data_df.astype(object).where(
+                    pd.notna(test_data_df), None)
 
                 # Procesar las respuestas
                 correct_count = 0
@@ -126,6 +181,30 @@ def submit_test():
             return jsonify({"error": "Error al procesar el archivo"}), 500
     else:
         return jsonify({"error": "Test not found"}), 404
+
+
+@app.route('/translate-to-es', methods=['POST'])
+def translate_to_es():
+    data = request.get_json(silent=True) or {}
+    texts = data.get("texts", [])
+
+    if not isinstance(texts, list):
+        return jsonify({"error": "Invalid payload: texts must be a list"}), 400
+
+    if len(texts) == 0:
+        return jsonify({"translations": {}})
+
+    if len(texts) > 1200:
+        return jsonify({"error": "Too many texts in one request"}), 400
+
+    translations = {}
+    for raw_text in texts:
+        if raw_text is None:
+            continue
+        text = str(raw_text)
+        translations[text] = translate_text_to_spanish(text)
+
+    return jsonify({"translations": translations})
 
 
 if __name__ == '__main__':
