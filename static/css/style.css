@@ -446,6 +446,85 @@ body.dark-mode main {
     flex-shrink: 0; /* Evita que el input se reduzca de tamaño */
 }
 
+/* Diferenciacion visual clara entre radio (circular) y checkbox (cuadrado) */
+.question-single label input[type="radio"],
+.question-single label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 19px;
+    height: 19px;
+    margin: 1px 0 0 0;
+    display: inline-grid;
+    place-content: center;
+    border: 2px solid rgba(80, 95, 130, 0.72);
+    background-color: rgba(255, 255, 255, 0.92);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.question-single label input[type="radio"] {
+    border-radius: 50%;
+}
+
+.question-single label input[type="checkbox"] {
+    border-radius: 4px;
+}
+
+.question-single label input[type="radio"]::before,
+.question-single label input[type="checkbox"]::before {
+    content: "";
+    transition: transform 0.16s ease;
+}
+
+.question-single label input[type="radio"]::before {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #ff6a43;
+    transform: scale(0);
+}
+
+.question-single label input[type="checkbox"]::before {
+    width: 10px;
+    height: 6px;
+    border: 2px solid #ffffff;
+    border-top: 0;
+    border-right: 0;
+    transform: rotate(-45deg) scale(0);
+    margin-top: -1px;
+}
+
+.question-single label input[type="radio"]:checked {
+    border-color: #ff6a43;
+    box-shadow: 0 0 0 3px rgba(255, 106, 67, 0.2);
+}
+
+.question-single label input[type="radio"]:checked::before {
+    transform: scale(1);
+}
+
+.question-single label input[type="checkbox"]:checked {
+    border-color: #ff6a43;
+    background: #ff6a43;
+    box-shadow: 0 0 0 3px rgba(255, 106, 67, 0.2);
+}
+
+.question-single label input[type="checkbox"]:checked::before {
+    transform: rotate(-45deg) scale(1);
+}
+
+.question-single label input[type="radio"]:disabled,
+.question-single label input[type="checkbox"]:disabled {
+    cursor: default;
+    opacity: 0.95;
+}
+
+body.dark-mode .question-single label input[type="radio"],
+body.dark-mode .question-single label input[type="checkbox"] {
+    border-color: rgba(162, 178, 210, 0.7);
+    background-color: rgba(29, 36, 52, 0.95);
+}
+
 /* Botones de navegación */
 .navigation-buttons {
     display: grid;
