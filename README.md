@@ -1,49 +1,66 @@
 # 🌐 AWS Certification Practice Tests 📝
 
-¡Bienvenid@ a la web de **práctica para certificaciones de AWS**! Este proyecto está diseñado para ayudarte a reforzar tus conocimientos mediante una colección de preguntas organizadas por temas clave, esenciales para tu preparación.
+Aplicación web para practicar exámenes de certificación AWS con experiencia de test real: navegación por pregunta, seguimiento visual del progreso, marcadores para revisión y corrección detallada.
 
-Esta es una versión inicial en constante mejora, por lo que es posible que encuentres funcionalidades en construcción o áreas por optimizar. 🚧 Tus sugerencias y retroalimentación son siempre bienvenidas. 🙌
+Demo: [Practice Tests](https://javiloperwebtest.onrender.com)
 
-> **Nota:** Este recurso está creado exclusivamente con fines educativos. Úsalo como una herramienta complementaria para tu aprendizaje. 📚✨
+## ✨ Qué ofrece el proyecto
 
----
+- Banco de preguntas para varias certificaciones AWS.
+- Flujo de examen pregunta a pregunta (sin scroll infinito).
+- Panel numerado con estado por pregunta: actual, respondida y marcada para revisar.
+- Corrección visual al finalizar: aciertos y errores por pregunta y por opción.
+- Copia completa del examen corregido para analizar respuestas en herramientas externas.
+- Soporte EN/ES mediante datasets pretraducidos, con cambio de idioma instantáneo.
+- Diseño responsive orientado a móvil.
 
-## 📚 Características
+## 🧰 Stack
 
-- **Amplia variedad de preguntas** abarcando temas fundamentales para certificaciones de AWS.
-- **Interfaz interactiva**: selecciona un test, responde y recibe retroalimentación inmediata sobre tus aciertos y errores.
-- **Resultados detallados** al finalizar el test: porcentaje de aciertos y áreas a mejorar.
-- Compatible con preguntas de selección única y múltiple.
+- Backend: Flask + pandas
+- Frontend: HTML, CSS y JavaScript vanilla
+- Datos: bancos en formato PKL
+- Despliegue: Render
 
----
+## 🚀 Uso local rápido
 
-## 🚀 Acceso al proyecto
+```bash
+python app.py
+```
 
-Accede a esta web de práctica directamente desde el siguiente enlace: [Practice Tests](https://javiloperwebtest.onrender.com).
+Abrir en navegador: `http://localhost:8080`
 
----
+## 🗂️ Datos y mantenimiento
 
-## ⚠️ Descargo de responsabilidad
+Los bancos principales se almacenan en `data/*.pkl`.
 
-- Este proyecto **no está afiliado, respaldado ni autorizado por Amazon** ni ninguna otra marca.
-- **Las marcas comerciales, certificaciones y nombres de productos** son propiedad de Amazon y se utilizan únicamente como referencia.
-- Este contenido es estrictamente educativo y **no está destinado a sustituir** recursos oficiales.
+Si se incorporan nuevos PKL, conviene generar su versión en español para mantener traducción instantánea y evitar latencia en tiempo real.
 
----
+### 🔁 Pretraducción de nuevos bancos
 
-## 📜 Notas adicionales
+El script genera archivos `*_es.pkl` con columnas `Pregunta_ES`, `A_ES` ... `F_ES`.
 
-1. Este proyecto ha sido desarrollado como un recurso personal para fomentar el aprendizaje. Pueden existir errores en el contenido o en la funcionalidad; cualquier comentario será bien recibido para futuras mejoras. 🎉
-2. Aunque es una herramienta educativa útil, **no sustituye los recursos oficiales de AWS** ni garantiza la exactitud absoluta de las preguntas.
+Ejecutar para todos:
 
-**Nota adicional:** Algunas preguntas se inspiran en recursos disponibles públicamente en línea. Se recomienda complementar este recurso con los materiales oficiales de AWS para obtener una preparación completa.
+```bash
+python scripts/pretranslate_pkl_to_es.py --data-dir data --sleep-ms 0 --workers 8
+```
 
----
+Ejecutar para un test concreto:
 
-## 💡 Contribuciones
+```bash
+python scripts/pretranslate_pkl_to_es.py --data-dir data --test-name cloud_practitioner_C02 --sleep-ms 0 --workers 8
+```
 
-Si tienes ideas, mejoras o encuentras errores, ¡no dudes en contribuir al proyecto! Puedes crear un issue o enviarme un mensaje directamente.
+Si un test no tiene su `*_es.pkl`, el botón de traducción se desactiva automáticamente para ese banco.
 
----
+## ⚠️ Disclaimer
 
-🌟 **Gracias por usar esta herramienta.** Espero que te ayude en tu camino hacia las certificaciones de AWS. 💪
+- Proyecto educativo no afiliado ni respaldado por Amazon.
+- Nombres de certificaciones y marcas usados solo como referencia.
+- Recomendado complementar con material oficial de AWS.
+
+## 🤝 Contribuciones
+
+Si detectas errores o quieres proponer mejoras, puedes abrir un issue o compartir feedback.
+
+🌟 Gracias por pasarte por el proyecto. Cualquier idea para mejorarlo es bienvenida.

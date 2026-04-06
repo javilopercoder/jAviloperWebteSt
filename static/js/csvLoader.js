@@ -71,7 +71,6 @@ function displayQuestions(questions, testName) {
         originalQuestions: JSON.parse(JSON.stringify(questions)),
         translatedQuestions: null,
         language: "en",
-        isTranslating: false,
         questionStates,
         userAnswers,
         currentIndex: 0,
@@ -85,55 +84,36 @@ function displayQuestions(questions, testName) {
             return;
         }
 
-        if (state.isTranslating) {
-            translateButton.textContent = "Traduciendo...";
-            translateButton.disabled = true;
-            return;
-        }
-
-        translateButton.disabled = false;
         translateButton.textContent = state.language === "es" ? "Ver en inglés" : "Traducir al español";
     }
 
-    function getUniqueTextsToTranslate() {
-        const texts = new Set();
-
-        state.originalQuestions.forEach(question => {
-            if (question.Pregunta) {
-                texts.add(String(question.Pregunta));
-            }
-
-            ["A", "B", "C", "D", "E", "F"].forEach(option => {
-                const value = question[option];
-                if (value && value !== "NaN") {
-                    texts.add(String(value));
-                }
-            });
-        });
-
-        return Array.from(texts);
-    }
-
-    function buildTranslatedQuestions(translationsMap) {
+    function buildTranslatedQuestionsFromColumns() {
         return state.originalQuestions.map(question => {
             const translatedQuestion = { ...question };
 
-            translatedQuestion.Pregunta = translationsMap[String(question.Pregunta)] || question.Pregunta;
+            if (question.Pregunta_ES && question.Pregunta_ES !== "NaN") {
+                translatedQuestion.Pregunta = question.Pregunta_ES;
+            }
 
             ["A", "B", "C", "D", "E", "F"].forEach(option => {
-                const value = question[option];
-                if (!value || value === "NaN") {
+                const esKey = `${option}_ES`;
+                const esValue = question[esKey];
+                if (!esValue || esValue === "NaN") {
                     return;
                 }
-                translatedQuestion[option] = translationsMap[String(value)] || value;
+                translatedQuestion[option] = esValue;
             });
 
             return translatedQuestion;
         });
     }
 
+    function hasPretranslatedData() {
+        return state.originalQuestions.some(q => q.Pregunta_ES && q.Pregunta_ES !== "NaN");
+    }
+
     async function toggleSpanishTranslation() {
-        if (!translateButton || state.isTranslating) {
+        if (!translateButton) {
             return;
         }
 
@@ -147,45 +127,19 @@ function displayQuestions(questions, testName) {
             return;
         }
 
-        if (state.translatedQuestions) {
-            state.questions = JSON.parse(JSON.stringify(state.translatedQuestions));
-            state.language = "es";
-            updateTranslateButtonLabel();
-            renderCurrentQuestion();
+        if (!hasPretranslatedData()) {
+            alert("Este test aun no tiene version pretraducida en datos.");
             return;
         }
 
-        try {
-            state.isTranslating = true;
-            updateTranslateButtonLabel();
-
-            const texts = getUniqueTextsToTranslate();
-            const response = await fetch("/translate-to-es", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ texts })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error HTTP ${response.status}`);
-            }
-
-            const payload = await response.json();
-            const translationsMap = payload.translations || {};
-
-            state.translatedQuestions = buildTranslatedQuestions(translationsMap);
-            state.questions = JSON.parse(JSON.stringify(state.translatedQuestions));
-            state.language = "es";
-        } catch (error) {
-            console.error("No se pudo traducir al espanol:", error);
-            alert("No se pudo traducir en este momento. Puedes reintentar.");
-        } finally {
-            state.isTranslating = false;
-            updateTranslateButtonLabel();
-            renderCurrentQuestion();
+        if (!state.translatedQuestions) {
+            state.translatedQuestions = buildTranslatedQuestionsFromColumns();
         }
+
+        state.questions = JSON.parse(JSON.stringify(state.translatedQuestions));
+        state.language = "es";
+        updateTranslateButtonLabel();
+        renderCurrentQuestion();
     }
 
     function getSelectedAnswersFromDom() {
@@ -361,6 +315,7 @@ function displayQuestions(questions, testName) {
     });
 
     if (translateButton) {
+        translateButton.disabled = !hasPretranslatedData();
         translateButton.addEventListener("click", toggleSpanishTranslation);
     }
 

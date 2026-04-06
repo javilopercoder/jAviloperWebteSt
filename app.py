@@ -59,6 +59,33 @@ def sanitize_for_json(value):
     return value
 
 
+def get_es_path_for_test(test_name):
+    return f"data/{test_name}_es.pkl"
+
+
+def attach_spanish_columns(test_name, sampled_df):
+    es_path = get_es_path_for_test(test_name)
+    if not os.path.exists(es_path):
+        return sampled_df
+
+    try:
+        with open(es_path, "rb") as pkl_file:
+            es_df = pickle.load(pkl_file)
+    except Exception as e:
+        print(f"No se pudo cargar el archivo ES {es_path}: {e}")
+        return sampled_df
+
+    expected_es_columns = ["Pregunta_ES", "A_ES", "B_ES", "C_ES", "D_ES", "E_ES", "F_ES"]
+    missing = [col for col in expected_es_columns if col not in es_df.columns]
+    if missing:
+        print(f"Archivo ES sin columnas esperadas {missing}: {es_path}")
+        return sampled_df
+
+    # Mantiene alineacion por indice para no romper el muestreo aleatorio ya elegido.
+    es_subset = es_df.loc[sampled_df.index, expected_es_columns]
+    return sampled_df.join(es_subset)
+
+
 # Ruta para la página principal
 @app.route('/')
 def index():
@@ -103,9 +130,11 @@ def get_data(test_name):
                         "El número de preguntas es menor o igual a 65, se enviarán todas las preguntas."
                     )
 
+                # Si existe dataset pretraducido, añade columnas *_ES para cambio de idioma instantaneo.
+                test_data_df = attach_spanish_columns(test_name, test_data_df)
+
                 # Convierte el DataFrame a un diccionario JSON serializable
-                test_data = sanitize_for_json(
-                    test_data_df.to_dict(orient="records"))
+                test_data = sanitize_for_json(test_data_df.to_dict(orient="records"))
                 test_preview = test_data[:5] if isinstance(test_data, list) else []
                 print(f"Datos JSON enviados para {test_name}: {test_preview}"
                       )  # Muestra una muestra en consola
