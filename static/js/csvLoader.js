@@ -209,8 +209,8 @@ function displayQuestions(questions, testName) {
     function renderCurrentQuestion() {
         const index = state.currentIndex;
         const question = state.questions[index];
-        const isMultiple = question["MULTIPLE"] === 1;
         const correctOptions = ["A", "B", "C", "D", "E", "F"].filter(option => question[`SPAN_${option}`] === 1);
+        const isMultiple = correctOptions.length > 1 || question["MULTIPLE"] === 1;
 
         form.innerHTML = "";
 

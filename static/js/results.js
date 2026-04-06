@@ -103,9 +103,9 @@ function handleSubmit() {
 
     let correctAnswersCount = 0;
     state.questions.forEach((question, index) => {
-        const isMultiple = question["MULTIPLE"] === 1;
         const selectedOptions = state.userAnswers[index] || [];
         const correctAnswersArray = ["A", "B", "C", "D", "E", "F"].filter(option => question[`SPAN_${option}`] === 1);
+        const isMultiple = correctAnswersArray.length > 1 || question["MULTIPLE"] === 1;
 
         let isCorrect;
 
