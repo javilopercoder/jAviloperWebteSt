@@ -92,6 +92,14 @@ def index():
     return render_template('index.html')
 
 
+def get_question_limit(raw_limit, default=65):
+    try:
+        parsed = int(raw_limit)
+        return max(1, min(parsed, 65))
+    except (TypeError, ValueError):
+        return default
+
+
 @app.route('/test/<test_name>')
 def test(test_name):
     # Comprueba si el test_name existe en el archivo .pkl antes de renderizar la plantilla
@@ -103,7 +111,12 @@ def test(test_name):
     ]
 
     if test_name in valid_tests:
-        return render_template('test_template.html', test_name=test_name)
+        question_limit = get_question_limit(request.args.get('limit'), default=65)
+        return render_template(
+            'test_template.html',
+            test_name=test_name,
+            question_limit=question_limit
+        )
     else:
         return "Test not found", 404
 
@@ -111,6 +124,7 @@ def test(test_name):
 @app.route('/get-data/<test_name>', methods=['GET'])
 def get_data(test_name):
     pkl_path = f"data/{test_name}.pkl"
+    question_limit = get_question_limit(request.args.get('limit'), default=65)
     print(f"Intentando cargar el archivo: {pkl_path}")
 
     if os.path.exists(pkl_path):
@@ -122,12 +136,12 @@ def get_data(test_name):
                 test_data_df = test_data_df.astype(object).where(
                     pd.notna(test_data_df), None)
 
-                # Selecciona aleatoriamente 65 preguntas sin repetición
-                if len(test_data_df) > 65:
-                    test_data_df = test_data_df.sample(n=65, random_state=None)
+                # Selecciona aleatoriamente n preguntas sin repetición (maximo 65)
+                if len(test_data_df) > question_limit:
+                    test_data_df = test_data_df.sample(n=question_limit, random_state=None)
                 else:
                     print(
-                        "El número de preguntas es menor o igual a 65, se enviarán todas las preguntas."
+                        "El número de preguntas es menor o igual al limite, se enviarán todas las preguntas."
                     )
 
                 # Si existe dataset pretraducido, añade columnas *_ES para cambio de idioma instantaneo.

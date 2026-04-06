@@ -1,5 +1,5 @@
-function loadTestQuestions(testName) {
-    fetch(`/get-data/${testName}`)
+function loadTestQuestions(testName, questionLimit = 65) {
+    fetch(`/get-data/${testName}?limit=${encodeURIComponent(questionLimit)}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

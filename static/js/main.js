@@ -1,63 +1,60 @@
-// Seleccionar el botón para cambiar de tema
-const themeToggleButton = document.createElement("button");
-themeToggleButton.id = "theme-toggle";
-themeToggleButton.textContent = "🌙";
-
-// Añadir el botón de cambio de tema al DOM
-document.body.appendChild(themeToggleButton);
-
-// Detectar el tema actual y aplicar el modo correspondiente
-function toggleTheme() {
-    document.body.classList.toggle("dark-mode");
-    const isDarkMode = document.body.classList.contains("dark-mode");
-    themeToggleButton.textContent = isDarkMode ? "🌞" : "🌙";
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+function getCurrentTheme() {
+    return localStorage.getItem("theme") === "dark" ? "dark" : "light";
 }
 
-// Escuchar el clic en el botón de cambio de tema
-themeToggleButton.addEventListener("click", toggleTheme);
-
-// Aplicar el tema almacenado en localStorage al cargar la página
-if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-    themeToggleButton.textContent = "🌞";
+function applyTheme(theme) {
+    const isDark = theme === "dark";
+    document.body.classList.toggle("dark-mode", isDark);
 }
 
-// Crear el botón "Home"
-const homeButton = document.createElement("button");
-homeButton.id = "back-home";
-homeButton.textContent = "🏠";
-homeButton.title = "Volver a la página principal"; // Agrega un tooltip
+function createActionDock() {
+    const dock = document.createElement("div");
+    dock.className = "action-dock";
 
-// Establecer la funcionalidad del botón "Home"
-homeButton.addEventListener("click", () => {
-    window.location.href = "/"; // Cambia "/" por la URL principal si es necesario
-});
+    const themeButton = document.createElement("button");
+    themeButton.id = "theme-toggle";
+    themeButton.className = "dock-button icon-only";
+    themeButton.type = "button";
 
-// Añadir el botón "Home" al DOM
-document.body.appendChild(homeButton);
+    const homeButton = document.createElement("button");
+    homeButton.id = "back-home";
+    homeButton.className = "dock-button icon-only";
+    homeButton.type = "button";
+    homeButton.title = "Volver a inicio";
+    homeButton.textContent = "⌂";
 
-// Temporizador para el test
-let totalTime = 5400; // Tiempo total en segundos (90 minutos)
+    const updateThemeButton = () => {
+        const isDark = document.body.classList.contains("dark-mode");
+        themeButton.textContent = isDark ? "☼" : "◐";
+        themeButton.title = isDark ? "Activar tema claro" : "Activar tema oscuro";
+    };
+
+    themeButton.addEventListener("click", () => {
+        const current = document.body.classList.contains("dark-mode") ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        applyTheme(next);
+        localStorage.setItem("theme", next);
+        updateThemeButton();
+    });
+
+    homeButton.addEventListener("click", () => {
+        window.location.href = "/";
+    });
+
+    updateThemeButton();
+
+    const isHomePage = document.body.classList.contains("home-page");
+    if (isHomePage) {
+        homeButton.style.display = "none";
+    }
+
+    dock.appendChild(themeButton);
+    dock.appendChild(homeButton);
+    document.body.appendChild(dock);
+}
+
+let totalTime = 5400;
 let timerInterval;
-
-function startTimer() {
-    const timerElement = document.createElement("p");
-    timerElement.id = "timer";
-    timerElement.textContent = `Tiempo restante: ${formatTime(totalTime)}`;
-    document.body.prepend(timerElement);
-
-    timerInterval = setInterval(() => {
-        totalTime--;
-        timerElement.textContent = `Tiempo restante: ${formatTime(totalTime)}`;
-
-        if (totalTime <= 0) {
-            clearInterval(timerInterval);
-            alert("Tiempo terminado. El test se enviará automáticamente.");
-            handleSubmit(); // Llamamos a la función de envío
-        }
-    }, 1000);
-}
 
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -65,4 +62,85 @@ function formatTime(seconds) {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
 }
 
-startTimer();
+function startTimerIfTestPage() {
+    const isTestPage = document.body.classList.contains("test-page") && document.getElementById("test-form");
+    if (!isTestPage) {
+        return;
+    }
+
+    const rawLimit = Number(document.body.dataset.questionLimit || "65");
+    const questionLimit = Number.isFinite(rawLimit) ? rawLimit : 65;
+    if (questionLimit < 65) {
+        return;
+    }
+
+    const timerElement = document.createElement("p");
+    timerElement.id = "timer";
+    timerElement.textContent = `Tiempo restante: ${formatTime(totalTime)}`;
+    document.body.appendChild(timerElement);
+
+    timerInterval = setInterval(() => {
+        totalTime -= 1;
+        timerElement.textContent = `Tiempo restante: ${formatTime(totalTime)}`;
+
+        if (totalTime <= 0) {
+            clearInterval(timerInterval);
+            alert("Tiempo terminado. El test se enviara automaticamente.");
+            if (typeof handleSubmit === "function") {
+                handleSubmit();
+            }
+        }
+    }, 1000);
+}
+
+function stopExamTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function setupHeaderShrinkOnScroll() {
+    const header = document.querySelector("header");
+    if (!header) {
+        return;
+    }
+
+    const toggleShrink = () => {
+        if (window.scrollY > 50) {
+            header.classList.add("shrink");
+        } else {
+            header.classList.remove("shrink");
+        }
+    };
+
+    window.addEventListener("scroll", toggleShrink);
+    toggleShrink();
+}
+
+function setupHomeInteractions() {
+    if (!document.body.classList.contains("home-page")) {
+        return;
+    }
+
+    const quickForm = document.getElementById("quick-test-form");
+    const quickRoute = document.getElementById("quick-route");
+    if (quickForm && quickRoute) {
+        quickForm.addEventListener("submit", event => {
+            event.preventDefault();
+            const route = quickRoute.value;
+            if (!route) {
+                return;
+            }
+            window.location.href = `/test/${route}?limit=10`;
+        });
+    }
+}
+
+window.stopExamTimer = stopExamTimer;
+
+applyTheme(getCurrentTheme());
+createActionDock();
+startTimerIfTestPage();
+setupHeaderShrinkOnScroll();
+setupHomeInteractions();

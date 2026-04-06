@@ -95,6 +95,10 @@ function handleSubmit() {
         }
     }
 
+    if (typeof window.stopExamTimer === "function") {
+        window.stopExamTimer();
+    }
+
     state.submitted = true;
 
     let correctAnswersCount = 0;
