@@ -107,7 +107,8 @@ def test(test_name):
         'advanced_networking_C01', 'cloud_practitioner_C02',
         'data_engineer_C01', 'developer_C02', 'devOps', 'security',
         'solutions_architect_associate_C03',
-        'solutions_architect_professional_C02', 'sysOps'
+        'solutions_architect_professional_C02', 'sysOps',
+        'Salesforce_DataCloud'
     ]
 
     if test_name in valid_tests:

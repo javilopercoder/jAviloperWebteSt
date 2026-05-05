@@ -79,6 +79,36 @@ function displayQuestions(questions, testName) {
 
     window.testState = state;
 
+    // --- Texto agradable: dividir pregunta en párrafos (1-2 oraciones) ---
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function formatQuestionTextHTML(text, sentencesPerParagraph = 2) {
+        if (!text || typeof text !== 'string') return '';
+        // Normalizar espacios y eliminar retornos de línea extra
+        const normalized = text.replace(/\s+/g, ' ').trim();
+        // Regex simple para dividir en oraciones (mantiene signos . ? !)
+        const sentenceRegex = /[^.!?]+[.!?]*\s*/g;
+        const rawSentences = normalized.match(sentenceRegex) || [normalized];
+
+        // Agrupar 1-2 oraciones por párrafo para lectura cómoda
+        const paragraphs = [];
+        for (let i = 0; i < rawSentences.length; i += sentencesPerParagraph) {
+            const group = rawSentences.slice(i, i + sentencesPerParagraph).join(' ').trim();
+            if (group) paragraphs.push(group);
+        }
+
+        // Fallback: si no hay párrafos, usar el texto completo
+        if (paragraphs.length === 0) paragraphs.push(normalized);
+
+        return paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+    }
     function updateTranslateButtonLabel() {
         if (!translateButton) {
             return;
@@ -219,8 +249,9 @@ function displayQuestions(questions, testName) {
         questionContainer.dataset.index = `${index}`;
         questionContainer.dataset.isMultiple = isMultiple;
 
-        const questionText = document.createElement("p");
-        questionText.textContent = `${index + 1}. ${question["Pregunta"]}`;
+        const questionText = document.createElement("div");
+        questionText.classList.add("question-body");
+        questionText.innerHTML = formatQuestionTextHTML(`${index + 1}. ${question["Pregunta"]}`);
         questionContainer.appendChild(questionText);
 
         ["A", "B", "C", "D", "E", "F"].forEach(option => {

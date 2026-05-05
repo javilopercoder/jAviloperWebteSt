@@ -425,6 +425,13 @@ body.dark-mode main {
     word-break: break-word;
 }
 
+/* Párrafos formateados dentro del cuerpo de la pregunta (lectura cómoda) */
+.question .question-body p {
+    margin: 0 0 0.6em 0;
+    line-height: 1.36;
+    font-weight: 700;
+}
+
 /* Opciones de respuesta */
 .question label {
     display: flex;

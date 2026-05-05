@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Online</title>
+    <title>Certification Exam Simulator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="home-page">
     <header>
-        <h1>AWS Exam Simulator</h1>
-        <p>Práctica con flujo real de examen</p>
+        <h1>Certification Exam Simulator</h1>
+        <p>Práctica con flujo real de examen para múltiples certificaciones</p>
     </header>
 
     <main>
         <section class="hero-panel" aria-label="Introduccion principal">
-            <p class="hero-eyebrow">Simulación orientada a certificaciones AWS</p>
-            <h2>Entrena de cara a las certificaciones</h2>
+            <p class="hero-eyebrow">Simulación orientada a certificaciones técnicas</p>
+            <h2>Entrena de cara a tus certificaciones</h2>
             <p class="hero-text">
                 Navegación por pregunta, marcado para revisar, corrección detallada por opción y soporte bilingue EN/ES con cambio instantaneo.
             </p>
@@ -32,6 +32,7 @@
                         <option value="data_engineer_C01">Data Engineer</option>
                         <option value="advanced_networking_C01">Advanced Networking</option>
                         <option value="security">Security</option>
+                        <option value="Salesforce_DataCloud">Salesforce Data Cloud</option>
                     </select>
                     <button type="submit" class="hero-cta ghost">Iniciar</button>
                 </form>
@@ -40,8 +41,8 @@
 
         <section class="quick-metrics" aria-label="Resumen funcional">
             <article class="metric-card">
-                <h3>9 rutas</h3>
-                <p>Cobertura de areas clave para preparación de examenes AWS.</p>
+                <h3>10 rutas</h3>
+                <p>Cobertura de áreas clave para preparación de exámenes de cloud y datos.</p>
             </article>
             <article class="metric-card">
                 <h3>Flujo guiado</h3>
@@ -63,11 +64,12 @@
             <a class="track-card" href="{{ url_for('test', test_name='data_engineer_C01') }}"><span>Data Engineer</span><small>Datos</small></a>
             <a class="track-card" href="{{ url_for('test', test_name='advanced_networking_C01') }}"><span>Advanced Networking</span><small>Redes</small></a>
             <a class="track-card" href="{{ url_for('test', test_name='security') }}"><span>Security</span><small>Proteccion</small></a>
+            <a class="track-card" href="{{ url_for('test', test_name='Salesforce_DataCloud') }}"><span>Salesforce Data Cloud</span><small>Ecosistema Salesforce</small></a>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 · AWS Exam Simulator · javilopercoder</p>
+        <p>&copy; 2026 · Certification Exam Simulator · javilopercoder</p>
     </footer>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
